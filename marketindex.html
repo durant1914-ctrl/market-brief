@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080c10;--surface:#0f1419;--surface2:#161d25;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --text:#e8eaed;--muted:#6b7280;
+  --accent:#00d4a0;--accent2:#00a87e;
+  --bull:#10b981;--bear:#ef4444;--warn:#f59e0b;
+  --mono:'DM Mono',monospace;--serif:'DM Serif Display',serif;--sans:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:300;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,160,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,160,0.025) 1px,transparent 1px);background-size:52px 52px;pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;top:-220px;left:50%;transform:translateX(-50%);width:900px;height:550px;background:radial-gradient(ellipse,rgba(0,212,160,0.055) 0%,transparent 68%);pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:0 24px 80px}
+
+header{padding:56px 0 0;text-align:center}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;margin-bottom:22px;opacity:0;animation:fadeUp 0.6s ease forwards 0.1s}
+h1{font-family:var(--serif);font-size:clamp(48px,8vw,86px);line-height:1.0;color:#fff;opacity:0;animation:fadeUp 0.7s ease forwards 0.2s}
+h1 em{font-style:italic;color:var(--accent)}
+.subhead{margin:20px auto 0;font-size:16px;font-weight:300;color:var(--muted);line-height:1.65;max-width:500px;opacity:0;animation:fadeUp 0.7s ease forwards 0.35s}
+
+.config-card{margin:44px auto 0;background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:32px;opacity:0;animation:fadeUp 0.7s ease forwards 0.5s}
+.config-label{font-family:var(--mono);font-size:10px;letter-spacing:0.14em;color:var(--muted);text-transform:uppercase;margin-bottom:7px;display:block}
+.config-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:560px){.config-grid{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:6px}
+
+input[type=text],input[type=password]{background:var(--bg);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:13px;padding:11px 14px;outline:none;transition:border-color 0.2s;width:100%}
+input:focus{border-color:var(--accent)}
+input::placeholder{color:var(--muted);opacity:0.45}
+
+.tickers-wrap{display:flex;flex-wrap:wrap;gap:7px;padding:9px 10px;background:var(--bg);border:1px solid var(--border2);border-radius:8px;min-height:46px;align-items:center;cursor:text;transition:border-color 0.2s}
+.tickers-wrap:focus-within{border-color:var(--accent)}
+.ticker-chip{background:rgba(0,212,160,0.1);border:1px solid rgba(0,212,160,0.22);border-radius:4px;color:var(--accent);font-family:var(--mono);font-size:11px;font-weight:500;padding:3px 8px;display:flex;align-items:center;gap:5px;letter-spacing:0.05em}
+.ticker-chip button{background:none;border:none;color:var(--accent);cursor:pointer;font-size:14px;line-height:1;opacity:0.55;padding:0;transition:opacity 0.15s}
+.ticker-chip button:hover{opacity:1}
+#ticker-input{background:none;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:12px;min-width:60px;flex:1}
+
+.btn-brief{width:100%;padding:18px;background:var(--accent);border:none;border-radius:10px;color:#000;cursor:pointer;font-family:var(--sans);font-size:15px;font-weight:500;letter-spacing:0.02em;margin-top:8px;position:relative;overflow:hidden;transition:background 0.2s,transform 0.15s}
+.btn-brief::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);transform:translateX(-100%);transition:transform 0.55s}
+.btn-brief:hover{background:#00e6ae;transform:translateY(-1px)}
+.btn-brief:hover::before{transform:translateX(100%)}
+.btn-brief:active{transform:translateY(0)}
+.btn-brief:disabled{background:#111d18;color:#2a4a3a;cursor:not-allowed;transform:none}
+
+.loading-bar{height:2px;background:var(--border);border-radius:2px;margin:26px 0 0;overflow:hidden;display:none}
+.loading-bar.active{display:block}
+.loading-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent),var(--accent2));background-size:200%;animation:shimmer 1.6s linear infinite}
+.loading-status{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:0.1em;margin-top:10px;text-align:center;display:none;min-height:18px}
+.loading-status.active{display:block}
+
+#results{margin-top:44px;display:none}
+#results.visible{display:block}
+.result-header{display:flex;align-items:baseline;gap:14px;margin-bottom:30px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.result-header h2{font-family:var(--serif);font-size:30px;color:#fff}
+.timestamp{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:0.07em}
+.section{margin-bottom:38px}
+.section-title{font-family:var(--mono);font-size:10px;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.news-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin-bottom:10px;transition:border-color 0.2s}
+.news-card:hover{border-color:var(--border2)}
+.news-meta{display:flex;align-items:center;gap:9px;margin-bottom:9px;flex-wrap:wrap}
+.pill{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 7px;border-radius:3px;font-weight:500}
+.pill.bullish{background:rgba(16,185,129,0.14);color:var(--bull)}
+.pill.bearish{background:rgba(239,68,68,0.12);color:var(--bear)}
+.pill.neutral{background:rgba(107,114,128,0.18);color:var(--muted)}
+.pill.score{background:rgba(0,212,160,0.1);color:var(--accent)}
+.pill.buy{background:rgba(16,185,129,0.15);color:var(--bull)}
+.pill.sell{background:rgba(239,68,68,0.13);color:var(--bear)}
+.pill.hold{background:rgba(107,114,128,0.18);color:#9ca3af}
+.pill.trim{background:rgba(245,158,11,0.13);color:var(--warn)}
+.pill.add{background:rgba(0,212,160,0.13);color:var(--accent)}
+.pill.high{background:rgba(16,185,129,0.13);color:var(--bull)}
+.pill.medium{background:rgba(245,158,11,0.13);color:var(--warn)}
+.pill.low{background:rgba(107,114,128,0.18);color:var(--muted)}
+.source-tag{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.news-title{font-size:15px;font-weight:400;color:#d1d5db;margin-bottom:10px;line-height:1.45}
+.news-title a{color:inherit;text-decoration:none;transition:color 0.15s}
+.news-title a:hover{color:#fff}
+.bullets{list-style:none;display:flex;flex-direction:column;gap:5px}
+.bullets li{font-size:13px;color:#9ca3af;line-height:1.55;padding-left:16px;position:relative}
+.bullets li::before{content:'→';position:absolute;left:0;color:var(--accent);font-size:11px;top:1px}
+.tickers-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.t-badge{font-family:var(--mono);font-size:10px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:1px 6px}
+
+.market-table{width:100%;border-collapse:collapse}
+.market-table th{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;text-align:right;padding:6px 10px;border-bottom:1px solid var(--border);font-weight:400}
+.market-table th:first-child{text-align:left}
+.market-table td{padding:11px 10px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:12px;text-align:right;color:var(--text)}
+.market-table td:first-child{text-align:left}
+.market-table tr:last-child td{border-bottom:none}
+.market-table tr:hover td{background:rgba(255,255,255,0.02)}
+.ticker-name{font-weight:500;font-size:13px;color:#fff}
+.chg.pos{color:var(--bull)}
+.chg.neg{color:var(--bear)}
+.rsi-wrap{display:flex;align-items:center;gap:6px;justify-content:flex-end}
+.rsi-bar{width:40px;height:4px;background:var(--border2);border-radius:2px;overflow:hidden}
+.rsi-fill{height:100%;border-radius:2px;background:var(--muted)}
+.rsi-fill.overbought{background:var(--bear)}
+.rsi-fill.oversold{background:var(--bull)}
+.signal-bar-wrap{display:flex;align-items:center;gap:6px;justify-content:flex-end}
+.signal-bar{width:70px;height:5px;background:var(--border2);border-radius:3px;position:relative;overflow:hidden}
+.signal-fill{height:100%;position:absolute;border-radius:3px}
+
+.rec-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:10px}
+.rec-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.rec-ticker{font-family:var(--mono);font-size:18px;font-weight:500;color:#fff}
+.urgency-tag{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase}
+.rec-reasoning{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;list-style:none}
+.rec-reasoning li{font-size:13px;color:#9ca3af;line-height:1.5;padding-left:16px;position:relative}
+.rec-reasoning li::before{content:'·';position:absolute;left:4px;color:var(--accent)}
+.risk-flags{display:flex;flex-direction:column;gap:3px}
+.risk-flag{font-size:12px;color:var(--warn);background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15);border-radius:5px;padding:5px 10px;font-family:var(--mono)}
+
+.disclaimer{margin-top:36px;padding:16px 20px;background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15);border-radius:8px;font-size:12px;color:#9ca3af;line-height:1.6;text-align:center}
+.error-box{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:14px 18px;font-family:var(--mono);font-size:12px;color:var(--bear);margin-top:16px;display:none}
+.error-box.visible{display:block}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+footer{text-align:center;padding:40px 0 20px;font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.1em;opacity:0;animation:fadeUp 0.6s ease forwards 1.1s}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Personal Financial Intelligence</div>
+    <h1>Market<br><em>Brief</em></h1>
+    <p class="subhead">News synthesis, technical signals, and actionable portfolio recommendations — generated on demand.</p>
+  </header>
+
+  <div class="config-card">
+    <div class="config-grid">
+      <div class="field">
+        <label class="config-label" for="api-key">Anthropic API Key</label>
+        <input type="password" id="api-key" placeholder="sk-ant-…" autocomplete="off">
+      </div>
+      <div class="field">
+        <label class="config-label" for="news-key">NewsAPI Key</label>
+        <input type="password" id="news-key" placeholder="newsapi.org key" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="field" style="margin-bottom:20px">
+      <label class="config-label">Watchlist — press Enter or comma to add tickers</label>
+      <div class="tickers-wrap" id="tickers-wrap" onclick="document.getElementById('ticker-input').focus()">
+        <input type="text" id="ticker-input" placeholder="SPY, QQQ, AAPL…" maxlength="8" autocomplete="off" autocapitalize="characters">
+      </div>
+    </div>
+
+    <button class="btn-brief" id="run-btn" onclick="runBrief()">Get Daily Brief →</button>
+    <div class="loading-bar" id="loading-bar"><div class="loading-fill"></div></div>
+    <div class="loading-status" id="loading-status"></div>
+    <div class="error-box" id="error-box"></div>
+  </div>
+
+  <div id="results">
+    <div class="result-header">
+      <h2>Today's Brief</h2>
+      <span class="timestamp" id="gen-time"></span>
+    </div>
+
+    <div class="section">
+      <div class="section-title">News Intelligence</div>
+      <div id="news-output"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Market Signals</div>
+      <table class="market-table">
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>Price</th>
+            <th>1D Chg</th>
+            <th>RSI (14)</th>
+            <th>Signal</th>
+          </tr>
+        </thead>
+        <tbody id="market-output"></tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Action Engine</div>
+      <div id="rec-output"></div>
+    </div>
+
+    <div class="disclaimer">
+      ⚠&nbsp; AI-generated signals only. Not financial advice. Past performance does not indicate future results.
+      Always consult a licensed financial advisor before making investment decisions.
+    </div>
+  </div>
+</div>
+
+<footer>Market Brief · Powered by Claude · Keys stored in-session only · Never sent anywhere except Anthropic &amp; NewsAPI</footer>
+
+<script>
+// ── DEFAULT WATCHLIST
+const DEFAULT_TICKERS = ['SPY','QQQ','VTI','BND','AAPL','MSFT'];
+let tickers = [...DEFAULT_TICKERS];
+
+// ── TICKER CHIP UI
+function renderChips() {
+  const wrap = document.getElementById('tickers-wrap');
+  const inp = document.getElementById('ticker-input');
+  wrap.querySelectorAll('.ticker-chip').forEach(c => c.remove());
+  tickers.forEach(t => {
+    const chip = document.createElement('div');
+    chip.className = 'ticker-chip';
+    chip.innerHTML = `${t}<button type="button" onclick="removeTicker('${t}')" title="Remove">×</button>`;
+    wrap.insertBefore(chip, inp);
+  });
+}
+function removeTicker(t) { tickers = tickers.filter(x => x !== t); renderChips(); }
+function addTicker(val) {
+  val = val.trim().toUpperCase().replace(/[^A-Z0-9.]/g,'');
+  if (val && !tickers.includes(val)) tickers.push(val);
+}
+document.getElementById('ticker-input').addEventListener('keydown', e => {
+  const val = e.target.value;
+  if ((e.key === 'Enter' || e.key === ',') && val.trim()) {
+    e.preventDefault();
+    addTicker(val);
+    e.target.value = '';
+    renderChips();
+  }
+  if (e.key === 'Backspace' && !val && tickers.length) { tickers.pop(); renderChips(); }
+});
+renderChips();
+
+// ── FINANCIAL ALGORITHMS
+function calcRSI(prices, period = 14) {
+  if (prices.length < period + 1) return 50;
+  let gains = 0, losses = 0;
+  for (let i = 1; i <= period; i++) {
+    const d = prices[i] - prices[i-1];
+    if (d > 0) gains += d; else losses += Math.abs(d);
+  }
+  let ag = gains / period, al = losses / period;
+  for (let i = period + 1; i < prices.length; i++) {
+    const d = prices[i] - prices[i-1];
+    ag = (ag * (period-1) + (d > 0 ? d : 0)) / period;
+    al = (al * (period-1) + (d < 0 ? Math.abs(d) : 0)) / period;
+  }
+  if (al === 0) return 100;
+  return Math.round(100 - 100 / (1 + ag / al));
+}
+function calcSharpe(returns) {
+  if (returns.length < 20) return 0;
+  const rfr = 0.0525 / 252;
+  const excess = returns.map(r => r - rfr);
+  const mean = excess.reduce((a,b) => a+b, 0) / excess.length;
+  const std = Math.sqrt(excess.reduce((a,b) => a + (b-mean)**2, 0) / excess.length);
+  return std === 0 ? 0 : +((mean / std) * Math.sqrt(252)).toFixed(2);
+}
+function compositeSignal(rsi, sharpe, sentiment) {
+  const rsiN = (rsi - 50) / 50;
+  const sharpeN = Math.max(-1, Math.min(1, sharpe / 3));
+  const sentN = Math.max(-1, Math.min(1, sentiment));
+  return Math.round((rsiN * 0.30 + sharpeN * 0.30 + sentN * 0.40) * 100);
+}
+
+// ── HELPERS
+function setStatus(msg) {
+  const el = document.getElementById('loading-status');
+  el.textContent = msg;
+  el.classList.toggle('active', !!msg);
+}
+function showError(msg) {
+  const b = document.getElementById('error-box');
+  b.textContent = '⚠  ' + msg;
+  b.classList.add('visible');
+}
+function clearError() { document.getElementById('error-box').classList.remove('visible'); }
+
+// ── FETCH MARKET DATA (Yahoo Finance unofficial JSON)
+async function fetchMarketData(ticker) {
+  try {
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1y`;
+    const res = await fetch(url);
+    const json = await res.json();
+    const result = json.chart.result[0];
+    const meta = result.meta;
+    const closes = result.indicators.quote[0].close.filter(Boolean);
+    const price = meta.regularMarketPrice || closes[closes.length-1];
+    const prev = meta.chartPreviousClose || closes[closes.length-2];
+    const change1d = prev ? +((price - prev) / prev * 100).toFixed(2) : 0;
+    const returns = closes.slice(1).map((c,i) => (c - closes[i]) / closes[i]);
+    return { ticker, price: +price.toFixed(2), change1d, rsi: calcRSI(closes), sharpe: calcSharpe(returns), error: null };
+  } catch(e) {
+    return { ticker, price: null, change1d: null, rsi: null, sharpe: null, error: e.message };
+  }
+}
+
+// ── FETCH NEWS
+async function fetchNews(newsKey) {
+  const q = encodeURIComponent('stock market OR inflation OR "Federal Reserve" OR "interest rates" OR ETF OR "S&P 500"');
+  const url = `https://newsapi.org/v2/everything?q=${q}&language=en&sortBy=publishedAt&pageSize=20&apiKey=${newsKey}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    const j = await res.json().catch(() => ({}));
+    throw new Error(j.message || `NewsAPI error ${res.status} — check your key`);
+  }
+  const json = await res.json();
+  if (json.status !== 'ok') throw new Error(json.message || 'NewsAPI returned an error');
+  return (json.articles || []).slice(0, 15).map(a => ({
+    title: a.title, source: a.source?.name || '', url: a.url, description: a.description || ''
+  }));
+}
+
+// ── CALL CLAUDE
+async function callClaude(apiKey, system, userMsg, model = 'claude-haiku-4-5-20251001') {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({ model, max_tokens: 2000, system, messages: [{ role: 'user', content: userMsg }] })
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error?.message || `Anthropic API error ${res.status}`);
+  }
+  const data = await res.json();
+  return data.content[0].text;
+}
+
+// ── CLAUDE: ANALYZE NEWS
+async function analyzeNews(apiKey, headlines, tickerList) {
+  const system = `You are a financial analyst. Analyze news headlines for a retail investor with a diversified ETF and stock portfolio. Return ONLY valid JSON — an array of objects. No markdown, no explanation outside the JSON.`;
+  const user = `Portfolio watchlist: ${tickerList.join(', ')}
+
+Headlines to analyze:
+${headlines.map((h,i) => `${i+1}. ${h.title} (${h.source})`).join('\n')}
+
+Return a JSON array. Each object must have exactly:
+{
+  "index": number (1-based headline number),
+  "relevance": number 1-10,
+  "sentiment": "bullish" | "bearish" | "neutral",
+  "bullets": ["why this matters to the investor — bullet 1", "bullet 2", "bullet 3"],
+  "tickers": ["AFFECTED_TICKER"]
+}
+
+Only include items with relevance >= 5. Sort descending by relevance. Max 8 items.`;
+
+  const raw = await callClaude(apiKey, system, user);
+  return JSON.parse(raw.replace(/```json|```/g,'').trim());
+}
+
+// ── CLAUDE: RECOMMENDATIONS (use Sonnet for higher-stakes reasoning)
+async function getRecommendations(apiKey, marketSignals, newsSummary, tickerList) {
+  const system = `You are a conservative fiduciary investment analyst AI. Give evidence-based recommendations for a retail investor with a long-term diversified ETF portfolio (personal brokerage and retirement). Return ONLY valid JSON — no markdown, no preamble.`;
+  const user = `Watchlist: ${tickerList.join(', ')}
+
+Market signals:
+${marketSignals}
+
+Top news insights:
+${newsSummary}
+
+Return a JSON array of 4-6 recommendations. Each must have exactly:
+{
+  "ticker": "TICKER",
+  "action": "BUY" | "SELL" | "HOLD" | "TRIM" | "ADD",
+  "confidence": "HIGH" | "MEDIUM" | "LOW",
+  "urgency": "immediate" | "near-term" | "watch",
+  "reasoning": ["point 1", "point 2", "point 3"],
+  "risks": ["risk 1", "risk 2"]
+}
+
+Be conservative. Include at least one HOLD. Flag RSI > 70 as overbought. RSI < 30 as oversold opportunity.`;
+
+  const raw = await callClaude(apiKey, system, user, 'claude-sonnet-4-6');
+  return JSON.parse(raw.replace(/```json|```/g,'').trim());
+}
+
+// ── RENDER: NEWS
+function renderNews(analyzed, headlines) {
+  const el = document.getElementById('news-output');
+  if (!analyzed.length) {
+    el.innerHTML = '<p style="color:var(--muted);font-size:13px">No highly relevant news found for your watchlist today.</p>';
+    return;
+  }
+  el.innerHTML = analyzed.map(item => {
+    const h = headlines[(item.index||1) - 1] || {};
+    return `<div class="news-card">
+      <div class="news-meta">
+        <span class="pill ${item.sentiment}">${item.sentiment}</span>
+        <span class="pill score">Relevance ${item.relevance}/10</span>
+        <span class="source-tag">${h.source || ''}</span>
+      </div>
+      <div class="news-title"><a href="${h.url||'#'}" target="_blank" rel="noopener">${h.title||''}</a></div>
+      <ul class="bullets">${(item.bullets||[]).map(b=>`<li>${b}</li>`).join('')}</ul>
+      ${item.tickers?.length ? `<div class="tickers-row">${item.tickers.map(t=>`<span class="t-badge">${t}</span>`).join('')}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ── RENDER: MARKET TABLE
+function renderMarket(marketData, sentimentMap) {
+  document.getElementById('market-output').innerHTML = marketData.map(m => {
+    if (m.error) return `<tr><td class="ticker-name">${m.ticker}</td><td colspan="4" style="color:var(--muted);font-size:11px;text-align:right">Data unavailable</td></tr>`;
+    const sent = sentimentMap[m.ticker] || 0;
+    const sig = compositeSignal(m.rsi, m.sharpe, sent);
+    const chgClass = m.change1d >= 0 ? 'pos' : 'neg';
+    const chgSign = m.change1d >= 0 ? '+' : '';
+    const rsiClass = m.rsi > 70 ? 'overbought' : m.rsi < 30 ? 'oversold' : '';
+    const sigColor = sig > 20 ? 'var(--bull)' : sig < -20 ? 'var(--bear)' : 'var(--muted)';
+    const sigLeft = sig >= 0 ? '50%' : `${50 + sig/2}%`;
+    const sigWidth = `${Math.abs(sig)/2}%`;
+    return `<tr>
+      <td class="ticker-name">${m.ticker}</td>
+      <td style="font-weight:500">$${m.price}</td>
+      <td class="chg ${chgClass}">${chgSign}${m.change1d}%</td>
+      <td><div class="rsi-wrap">
+        <span style="font-size:11px">${m.rsi}</span>
+        <div class="rsi-bar"><div class="rsi-fill ${rsiClass}" style="width:${Math.min(100,m.rsi)}%"></div></div>
+      </div></td>
+      <td><div class="signal-bar-wrap">
+        <span style="font-size:11px;color:${sigColor}">${sig>0?'+':''}${sig}</span>
+        <div class="signal-bar"><div class="signal-fill" style="left:${sigLeft};width:${sigWidth};background:${sigColor}"></div></div>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── RENDER: RECOMMENDATIONS
+function renderRecs(recs) {
+  const urgencyMap = { immediate:'🔴 Immediate', 'near-term':'🟡 Near-term', watch:'🟢 Watch' };
+  document.getElementById('rec-output').innerHTML = recs.map(r => `
+    <div class="rec-card">
+      <div class="rec-header">
+        <span class="rec-ticker">${r.ticker}</span>
+        <span class="pill ${r.action.toLowerCase()}">${r.action}</span>
+        <span class="pill ${r.confidence.toLowerCase()}">${r.confidence} confidence</span>
+        <span class="urgency-tag">${urgencyMap[r.urgency]||r.urgency}</span>
+      </div>
+      <ul class="rec-reasoning">${(r.reasoning||[]).map(p=>`<li>${p}</li>`).join('')}</ul>
+      ${r.risks?.length ? `<div class="risk-flags">${r.risks.map(f=>`<div class="risk-flag">⚠ ${f}</div>`).join('')}</div>` : ''}
+    </div>`).join('');
+}
+
+// ── MAIN
+async function runBrief() {
+  clearError();
+  const apiKey = document.getElementById('api-key').value.trim();
+  const newsKey = document.getElementById('news-key').value.trim();
+  if (!apiKey) { showError('Enter your Anthropic API key to continue.'); return; }
+  if (!newsKey) { showError('Enter your NewsAPI key to continue.'); return; }
+  if (!tickers.length) { showError('Add at least one ticker to your watchlist.'); return; }
+
+  const btn = document.getElementById('run-btn');
+  btn.disabled = true;
+  document.getElementById('loading-bar').classList.add('active');
+  document.getElementById('results').classList.remove('visible');
+
+  try {
+    setStatus('Fetching market data…');
+    const marketData = await Promise.all(tickers.map(fetchMarketData));
+
+    setStatus('Fetching financial headlines…');
+    const headlines = await fetchNews(newsKey);
+
+    setStatus('Analyzing news with Claude…');
+    const analyzed = await analyzeNews(apiKey, headlines, tickers);
+
+    // Build sentiment map
+    const sentimentMap = {};
+    analyzed.forEach(item => {
+      const score = item.sentiment === 'bullish' ? 0.7 : item.sentiment === 'bearish' ? -0.7 : 0;
+      const weight = (item.relevance || 5) / 10;
+      (item.tickers||[]).forEach(t => { sentimentMap[t] = (sentimentMap[t]||0) + score * weight; });
+    });
+
+    setStatus('Generating recommendations with Claude…');
+    const marketSignals = marketData.filter(m => !m.error)
+      .map(m => `${m.ticker}: $${m.price}, 1D ${m.change1d}%, RSI ${m.rsi}, Sharpe ${m.sharpe}, sentiment ${(sentimentMap[m.ticker]||0).toFixed(2)}`)
+      .join('\n');
+    const newsSummary = analyzed.slice(0,5)
+      .map(item => `[${(item.sentiment||'').toUpperCase()}] ${headlines[(item.index||1)-1]?.title} → ${item.bullets?.[0]||''}`)
+      .join('\n');
+
+    const recs = await getRecommendations(apiKey, marketSignals, newsSummary, tickers);
+
+    document.getElementById('gen-time').textContent = new Date().toLocaleString('en-US',{dateStyle:'medium',timeStyle:'short'});
+    renderNews(analyzed, headlines);
+    renderMarket(marketData, sentimentMap);
+    renderRecs(recs);
+
+    document.getElementById('results').classList.add('visible');
+    document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+
+  } catch(e) {
+    showError(e.message || 'Something went wrong. Check your API keys and try again.');
+  } finally {
+    btn.disabled = false;
+    document.getElementById('loading-bar').classList.remove('active');
+    setStatus('');
+  }
+}
+</script>
+</body>
+</html>
