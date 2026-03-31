@@ -392,19 +392,30 @@ async function fetchMarketData(ticker) {
 }
 
 // ── FETCH FINANCIAL NEWS: Alpha Vantage
-async function fetchFinancialNews(avKey, tickerList) {
-  const defenseSymbols = tickerList.filter(t => ['ITA','XAR','DFEN','PPA','LMT','RTX','NOC','GD','BA'].includes(t));
-  const topics = defenseSymbols.length > 0
-    ? 'financial_markets,economy_macro,manufacturing'
-    : 'financial_markets,economy_macro,earnings';
-  const symbols = tickerList.slice(0, 5).join(',');
-  const url = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=${symbols}&topics=${topics}&limit=15&apikey=${avKey}`;
+// Uses topics-only query (no tickers) for broadest reliable coverage.
+// Defense ETFs like ITA/DFEN are not in AV's ticker universe so we
+// pull by topic and let Claude surface the defense-relevant stories.
+async function fetchFinancialNews(avKey) {
+  const topics = 'financial_markets,economy_macro,economy_monetary,energy_transportation,manufacturing';
+  const url = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topics=${topics}&limit=50&sort=LATEST&apikey=${avKey}`;
   const res = await fetch(url);
   const json = await res.json();
-  if (json['Information']) throw new Error('Alpha Vantage rate limit — free tier allows 25 requests/day. Try again in a few minutes.');
-  if (!json.feed || !json.feed.length) throw new Error('Alpha Vantage returned no news. Check your API key at alphavantage.co');
-  return (json.feed || []).slice(0, 12).map(a => ({
-    title: a.title, source: a.source, url: a.url, summary: a.summary || '', type: 'market'
+  if (json['Information']) throw new Error('Alpha Vantage rate limit reached — free tier allows 25 requests/day. Wait a few minutes and try again.');
+  if (json['Note']) throw new Error('Alpha Vantage rate limit reached — wait 1 minute and try again.');
+  // Filter to high-relevance financial_markets articles and take top 15
+  const feed = json.feed || [];
+  if (!feed.length) throw new Error('Alpha Vantage returned no news. Verify your API key at alphavantage.co');
+  const filtered = feed
+    .filter(a => a.topics && a.topics.some(t => t.topic === 'financial_markets' && parseFloat(t.relevance_score) > 0.5))
+    .slice(0, 15);
+  const results = (filtered.length >= 5 ? filtered : feed.slice(0, 15));
+  return results.map(a => ({
+    title: a.title,
+    source: a.source,
+    url: a.url,
+    summary: a.summary || '',
+    overallSentiment: a.overall_sentiment_label || 'Neutral',
+    type: 'market'
   }));
 }
 
@@ -624,7 +635,7 @@ async function runBrief() {
 
     // Step 2: Financial news (Alpha Vantage)
     setStatus('Fetching financial news from Alpha Vantage…');
-    const marketNews = await fetchFinancialNews(avKey, tickers);
+    const marketNews = await fetchFinancialNews(avKey);
 
     // Step 3: Claude analyzes market news
     setStatus('Analyzing financial news with Claude…');
