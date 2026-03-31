@@ -22,28 +22,36 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 body::after{content:'';position:fixed;top:-220px;left:50%;transform:translateX(-50%);width:900px;height:550px;background:radial-gradient(ellipse,rgba(0,212,160,0.055) 0%,transparent 68%);pointer-events:none;z-index:0}
 .wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:0 24px 80px}
 
-/* HEADER */
 header{padding:56px 0 0;text-align:center}
 .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;margin-bottom:22px;opacity:0;animation:fadeUp 0.6s ease forwards 0.1s}
 h1{font-family:var(--serif);font-size:clamp(48px,8vw,86px);line-height:1.0;color:#fff;opacity:0;animation:fadeUp 0.7s ease forwards 0.2s}
 h1 em{font-style:italic;color:var(--accent)}
 .subhead{margin:20px auto 0;font-size:16px;font-weight:300;color:var(--muted);line-height:1.65;max-width:520px;opacity:0;animation:fadeUp 0.7s ease forwards 0.35s}
 
-/* CONFIG CARD */
 .config-card{margin:44px auto 0;background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:32px;opacity:0;animation:fadeUp 0.7s ease forwards 0.5s}
 .config-label{font-family:var(--mono);font-size:10px;letter-spacing:0.14em;color:var(--muted);text-transform:uppercase;margin-bottom:7px;display:block}
-.config-hint{font-family:var(--mono);font-size:10px;color:var(--muted);opacity:0.6;margin-top:4px}
+.config-hint{font-family:var(--mono);font-size:10px;color:var(--muted);opacity:0.6;margin-top:5px}
 .config-hint a{color:var(--accent);text-decoration:none}
 .config-hint a:hover{text-decoration:underline}
-.config-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px}
-@media(max-width:680px){.config-grid{grid-template-columns:1fr}}
+.config-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:600px){.config-grid{grid-template-columns:1fr}}
 .field{display:flex;flex-direction:column;gap:6px}
 
 input[type=text],input[type=password]{background:var(--bg);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:13px;padding:11px 14px;outline:none;transition:border-color 0.2s;width:100%}
 input:focus{border-color:var(--accent)}
 input::placeholder{color:var(--muted);opacity:0.45}
 
-/* TICKER CHIPS */
+/* WATCHLIST GROUP LABELS */
+.watchlist-groups{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+@media(max-width:600px){.watchlist-groups{grid-template-columns:1fr}}
+.wl-group{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.wl-group-label{font-family:var(--mono);font-size:9px;letter-spacing:0.14em;color:var(--muted);text-transform:uppercase;margin-bottom:7px}
+.wl-chips{display:flex;flex-wrap:wrap;gap:5px}
+.wl-chip{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:3px;font-weight:500;cursor:default}
+.wl-chip.defense{background:rgba(239,68,68,0.1);color:#fca5a5;border:1px solid rgba(239,68,68,0.2)}
+.wl-chip.tech{background:rgba(0,212,160,0.09);color:var(--accent);border:1px solid rgba(0,212,160,0.2)}
+.wl-chip.etf{background:rgba(245,158,11,0.09);color:var(--warn);border:1px solid rgba(245,158,11,0.2)}
+
 .tickers-wrap{display:flex;flex-wrap:wrap;gap:7px;padding:9px 10px;background:var(--bg);border:1px solid var(--border2);border-radius:8px;min-height:46px;align-items:center;cursor:text;transition:border-color 0.2s}
 .tickers-wrap:focus-within{border-color:var(--accent)}
 .ticker-chip{background:rgba(0,212,160,0.1);border:1px solid rgba(0,212,160,0.22);border-radius:4px;color:var(--accent);font-family:var(--mono);font-size:11px;font-weight:500;padding:3px 8px;display:flex;align-items:center;gap:5px;letter-spacing:0.05em}
@@ -51,7 +59,6 @@ input::placeholder{color:var(--muted);opacity:0.45}
 .ticker-chip button:hover{opacity:1}
 #ticker-input{background:none;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:12px;min-width:60px;flex:1}
 
-/* BUTTON */
 .btn-brief{width:100%;padding:18px;background:var(--accent);border:none;border-radius:10px;color:#000;cursor:pointer;font-family:var(--sans);font-size:15px;font-weight:500;letter-spacing:0.02em;margin-top:8px;position:relative;overflow:hidden;transition:background 0.2s,transform 0.15s}
 .btn-brief::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);transform:translateX(-100%);transition:transform 0.55s}
 .btn-brief:hover{background:#00e6ae;transform:translateY(-1px)}
@@ -59,43 +66,38 @@ input::placeholder{color:var(--muted);opacity:0.45}
 .btn-brief:active{transform:translateY(0)}
 .btn-brief:disabled{background:#111d18;color:#2a4a3a;cursor:not-allowed;transform:none}
 
-/* LOADING */
 .loading-bar{height:2px;background:var(--border);border-radius:2px;margin:26px 0 0;overflow:hidden;display:none}
 .loading-bar.active{display:block}
 .loading-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent),var(--accent2));background-size:200%;animation:shimmer 1.6s linear infinite}
 .loading-status{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:0.1em;margin-top:10px;text-align:center;display:none;min-height:18px}
 .loading-status.active{display:block}
 
-/* ERROR */
 .error-box{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:14px 18px;font-family:var(--mono);font-size:12px;color:var(--bear);margin-top:16px;display:none;line-height:1.5}
 .error-box.visible{display:block}
 
-/* RESULTS */
 #results{margin-top:44px;display:none}
 #results.visible{display:block}
 .result-header{display:flex;align-items:baseline;gap:14px;margin-bottom:30px;padding-bottom:18px;border-bottom:1px solid var(--border)}
 .result-header h2{font-family:var(--serif);font-size:30px;color:#fff}
 .timestamp{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:0.07em}
 
-/* SECTIONS */
 .section{margin-bottom:40px}
 .section-title{font-family:var(--mono);font-size:10px;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px}
 .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
-.section-title.geo{color:var(--geo)}
 
-/* NEWS GRID - two columns side by side */
-.news-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+/* TWO-COLUMN NEWS LAYOUT */
+.news-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:640px){.news-grid{grid-template-columns:1fr}}
-.news-col-header{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;padding:6px 10px;border-radius:5px;margin-bottom:10px;text-align:center}
-.news-col-header.market{background:rgba(0,212,160,0.08);color:var(--accent);border:1px solid rgba(0,212,160,0.18)}
-.news-col-header.geo{background:rgba(167,139,250,0.08);color:var(--geo);border:1px solid rgba(167,139,250,0.18)}
+.news-col-label{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;padding:6px 10px;border-radius:5px;margin-bottom:10px;text-align:center}
+.news-col-label.market{background:rgba(0,212,160,0.08);color:var(--accent);border:1px solid rgba(0,212,160,0.18)}
+.news-col-label.geo{background:rgba(167,139,250,0.08);color:var(--geo);border:1px solid rgba(167,139,250,0.18)}
 
-/* NEWS CARDS */
 .news-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:10px;transition:border-color 0.2s}
 .news-card:hover{border-color:var(--border2)}
-.news-card.geo-card{border-left:2px solid rgba(167,139,250,0.35)}
-.news-card.market-card{border-left:2px solid rgba(0,212,160,0.35)}
+.news-card.market-card{border-left:2px solid rgba(0,212,160,0.4)}
+.news-card.geo-card{border-left:2px solid rgba(167,139,250,0.4)}
 .news-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+
 .pill{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 7px;border-radius:3px;font-weight:500}
 .pill.bullish{background:rgba(16,185,129,0.14);color:var(--bull)}
 .pill.bearish{background:rgba(239,68,68,0.12);color:var(--bear)}
@@ -110,6 +112,7 @@ input::placeholder{color:var(--muted);opacity:0.45}
 .pill.high{background:rgba(16,185,129,0.13);color:var(--bull)}
 .pill.medium{background:rgba(245,158,11,0.13);color:var(--warn)}
 .pill.low{background:rgba(107,114,128,0.18);color:var(--muted)}
+
 .source-tag{font-family:var(--mono);font-size:10px;color:var(--muted)}
 .news-title{font-size:14px;font-weight:400;color:#d1d5db;margin-bottom:9px;line-height:1.45}
 .news-title a{color:inherit;text-decoration:none;transition:color 0.15s}
@@ -120,8 +123,8 @@ input::placeholder{color:var(--muted);opacity:0.45}
 .bullets li.geo-bullet::before{color:var(--geo)}
 .tickers-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
 .t-badge{font-family:var(--mono);font-size:10px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:1px 6px}
+.geo-link{margin-top:7px;font-size:11px;color:var(--geo);font-family:var(--mono);line-height:1.5;padding-left:15px;border-left:2px solid rgba(167,139,250,0.3)}
 
-/* MARKET TABLE */
 .market-table{width:100%;border-collapse:collapse}
 .market-table th{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;text-align:right;padding:6px 10px;border-bottom:1px solid var(--border);font-weight:400}
 .market-table th:first-child{text-align:left}
@@ -130,6 +133,7 @@ input::placeholder{color:var(--muted);opacity:0.45}
 .market-table tr:last-child td{border-bottom:none}
 .market-table tr:hover td{background:rgba(255,255,255,0.02)}
 .ticker-name{font-weight:500;font-size:13px;color:#fff}
+.ticker-cat{font-size:9px;color:var(--muted);font-family:var(--mono);letter-spacing:0.05em}
 .chg.pos{color:var(--bull)}
 .chg.neg{color:var(--bear)}
 .rsi-wrap{display:flex;align-items:center;gap:6px;justify-content:flex-end}
@@ -141,7 +145,6 @@ input::placeholder{color:var(--muted);opacity:0.45}
 .signal-bar{width:70px;height:5px;background:var(--border2);border-radius:3px;position:relative;overflow:hidden}
 .signal-fill{height:100%;position:absolute;border-radius:3px}
 
-/* REC CARDS */
 .rec-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:10px}
 .rec-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
 .rec-ticker{font-family:var(--mono);font-size:18px;font-weight:500;color:#fff}
@@ -149,21 +152,16 @@ input::placeholder{color:var(--muted);opacity:0.45}
 .rec-reasoning{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;list-style:none}
 .rec-reasoning li{font-size:13px;color:#9ca3af;line-height:1.5;padding-left:16px;position:relative}
 .rec-reasoning li::before{content:'·';position:absolute;left:4px;color:var(--accent)}
-.risk-flags{display:flex;flex-direction:column;gap:3px}
+.risk-flags{display:flex;flex-direction:column;gap:3px;margin-top:8px}
 .risk-flag{font-size:12px;color:var(--warn);background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15);border-radius:5px;padding:5px 10px;font-family:var(--mono)}
+.geo-risk-box{background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.2);border-radius:7px;padding:10px 14px;margin-top:10px}
+.geo-risk-label{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;color:var(--geo);text-transform:uppercase;margin-bottom:5px}
+.geo-risk-box p{font-size:12px;color:#c4b5fd;line-height:1.55}
 
-/* GEO IMPACT BOX */
-.geo-impact{background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.18);border-radius:8px;padding:12px 16px;margin-top:10px}
-.geo-impact-label{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;color:var(--geo);text-transform:uppercase;margin-bottom:6px}
-.geo-impact p{font-size:12px;color:#c4b5fd;line-height:1.55}
-
-/* DISCLAIMER */
 .disclaimer{margin-top:36px;padding:16px 20px;background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15);border-radius:8px;font-size:12px;color:#9ca3af;line-height:1.6;text-align:center}
 
-/* ANIMATIONS */
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
 footer{text-align:center;padding:40px 0 20px;font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.1em;opacity:0;animation:fadeUp 0.6s ease forwards 1.1s}
 </style>
 </head>
@@ -173,10 +171,11 @@ footer{text-align:center;padding:40px 0 20px;font-family:var(--mono);font-size:1
   <header>
     <div class="eyebrow">Personal Financial Intelligence</div>
     <h1>Market<br><em>Brief</em></h1>
-    <p class="subhead">Financial market news, global geopolitical signals, and actionable portfolio recommendations — synthesized by AI on demand.</p>
+    <p class="subhead">Live market news, AI-generated geopolitical risk analysis, and actionable portfolio recommendations — on demand.</p>
   </header>
 
   <div class="config-card">
+
     <div class="config-grid">
       <div class="field">
         <label class="config-label" for="api-key">Anthropic API Key</label>
@@ -185,20 +184,49 @@ footer{text-align:center;padding:40px 0 20px;font-family:var(--mono);font-size:1
       </div>
       <div class="field">
         <label class="config-label" for="av-key">Alpha Vantage Key</label>
-        <input type="password" id="av-key" placeholder="Financial news" autocomplete="off">
+        <input type="password" id="av-key" placeholder="Financial market news" autocomplete="off">
         <span class="config-hint"><a href="https://alphavantage.co/support/#api-key" target="_blank">alphavantage.co → free key</a></span>
       </div>
-      <div class="field">
-        <label class="config-label" for="nd-key">NewsData.io Key</label>
-        <input type="password" id="nd-key" placeholder="Geopolitical news" autocomplete="off">
-        <span class="config-hint"><a href="https://newsdata.io" target="_blank">newsdata.io → free key</a></span>
+    </div>
+
+    <!-- WATCHLIST LEGEND -->
+    <div style="margin-bottom:10px">
+      <label class="config-label">Watchlist</label>
+      <div class="watchlist-groups">
+        <div class="wl-group">
+          <div class="wl-group-label">🛡 Defense ETFs</div>
+          <div class="wl-chips">
+            <span class="wl-chip defense">ITA</span>
+            <span class="wl-chip defense">XAR</span>
+            <span class="wl-chip defense">DFEN</span>
+            <span class="wl-chip defense">PPA</span>
+          </div>
+        </div>
+        <div class="wl-group">
+          <div class="wl-group-label">💻 Technology</div>
+          <div class="wl-chips">
+            <span class="wl-chip tech">QQQ</span>
+            <span class="wl-chip tech">AAPL</span>
+            <span class="wl-chip tech">MSFT</span>
+            <span class="wl-chip tech">NVDA</span>
+          </div>
+        </div>
+        <div class="wl-group">
+          <div class="wl-group-label">📈 Top ETFs</div>
+          <div class="wl-chips">
+            <span class="wl-chip etf">SPY</span>
+            <span class="wl-chip etf">VTI</span>
+            <span class="wl-chip etf">VGT</span>
+            <span class="wl-chip etf">BND</span>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="field" style="margin-bottom:20px">
-      <label class="config-label">Watchlist — press Enter or comma to add tickers</label>
+      <label class="config-label" style="margin-bottom:6px">Edit watchlist — press Enter or comma to add</label>
       <div class="tickers-wrap" id="tickers-wrap" onclick="document.getElementById('ticker-input').focus()">
-        <input type="text" id="ticker-input" placeholder="SPY, QQQ, AAPL…" maxlength="8" autocomplete="off" autocapitalize="characters">
+        <input type="text" id="ticker-input" placeholder="Add ticker…" maxlength="8" autocomplete="off" autocapitalize="characters">
       </div>
     </div>
 
@@ -214,22 +242,20 @@ footer{text-align:center;padding:40px 0 20px;font-family:var(--mono);font-size:1
       <span class="timestamp" id="gen-time"></span>
     </div>
 
-    <!-- NEWS INTELLIGENCE: two-column layout -->
     <div class="section">
       <div class="section-title">News Intelligence</div>
       <div class="news-grid">
         <div>
-          <div class="news-col-header market">📈 Financial Markets</div>
+          <div class="news-col-label market">📈 Financial Market News</div>
           <div id="market-news-output"></div>
         </div>
         <div>
-          <div class="news-col-header geo">🌍 Geopolitical Intelligence</div>
+          <div class="news-col-label geo">🌍 Geopolitical Intelligence</div>
           <div id="geo-news-output"></div>
         </div>
       </div>
     </div>
 
-    <!-- MARKET SIGNALS TABLE -->
     <div class="section">
       <div class="section-title">Market Signals</div>
       <table class="market-table">
@@ -246,7 +272,6 @@ footer{text-align:center;padding:40px 0 20px;font-family:var(--mono);font-size:1
       </table>
     </div>
 
-    <!-- ACTION ENGINE -->
     <div class="section">
       <div class="section-title">Action Engine</div>
       <div id="rec-output"></div>
@@ -259,11 +284,23 @@ footer{text-align:center;padding:40px 0 20px;font-family:var(--mono);font-size:1
   </div>
 </div>
 
-<footer>Market Brief · Powered by Claude · Alpha Vantage · NewsData.io · Keys stored in-session only</footer>
+<footer>Market Brief · Claude + Alpha Vantage · Keys stored in-session only</footer>
 
 <script>
-// ── DEFAULT WATCHLIST
-const DEFAULT_TICKERS = ['SPY','QQQ','VTI','BND','AAPL','MSFT'];
+// ── WATCHLIST: Defense ETFs + Tech + Top ETFs
+const DEFAULT_TICKERS = [
+  'ITA','XAR','DFEN','PPA',      // Defense ETFs
+  'QQQ','AAPL','MSFT','NVDA',    // Technology
+  'SPY','VTI','VGT','BND'        // Top broad ETFs
+];
+
+// Ticker category map for table display
+const TICKER_CATS = {
+  ITA:'Defense ETF', XAR:'Defense ETF', DFEN:'Defense ETF', PPA:'Defense ETF',
+  QQQ:'Tech ETF', AAPL:'Technology', MSFT:'Technology', NVDA:'Technology',
+  SPY:'Broad ETF', VTI:'Broad ETF', VGT:'Tech ETF', BND:'Bond ETF'
+};
+
 let tickers = [...DEFAULT_TICKERS];
 
 // ── TICKER CHIP UI
@@ -356,43 +393,19 @@ async function fetchMarketData(ticker) {
 
 // ── FETCH FINANCIAL NEWS: Alpha Vantage
 async function fetchFinancialNews(avKey, tickerList) {
-  try {
-    const symbols = tickerList.slice(0, 5).join(',');
-    const url = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=${symbols}&topics=financial_markets,economy_macro,earnings&limit=15&apikey=${avKey}`;
-    const res = await fetch(url);
-    const json = await res.json();
-    if (json['Information']) throw new Error('Alpha Vantage rate limit reached — try again in 1 minute');
-    if (!json.feed) throw new Error('Alpha Vantage returned no news — check your key');
-    return (json.feed || []).slice(0, 12).map(a => ({
-      title: a.title,
-      source: a.source,
-      url: a.url,
-      summary: a.summary || '',
-      type: 'market'
-    }));
-  } catch(e) {
-    throw new Error('Financial news: ' + e.message);
-  }
-}
-
-// ── FETCH GEOPOLITICAL NEWS: NewsData.io
-async function fetchGeopoliticalNews(ndKey) {
-  try {
-    const q = encodeURIComponent('geopolitical OR sanctions OR conflict OR military OR diplomacy OR trade war OR tariff OR NATO OR Russia OR China OR Middle East');
-    const url = `https://newsdata.io/api/1/latest?apikey=${ndKey}&q=${q}&language=en&category=world,politics&size=10`;
-    const res = await fetch(url);
-    const json = await res.json();
-    if (json.status !== 'success') throw new Error(json.message || 'NewsData.io error — check your key');
-    return (json.results || []).slice(0, 10).map(a => ({
-      title: a.title,
-      source: a.source_id || a.source_name || 'NewsData',
-      url: a.link || '#',
-      summary: a.description || '',
-      type: 'geo'
-    }));
-  } catch(e) {
-    throw new Error('Geopolitical news: ' + e.message);
-  }
+  const defenseSymbols = tickerList.filter(t => ['ITA','XAR','DFEN','PPA','LMT','RTX','NOC','GD','BA'].includes(t));
+  const topics = defenseSymbols.length > 0
+    ? 'financial_markets,economy_macro,manufacturing'
+    : 'financial_markets,economy_macro,earnings';
+  const symbols = tickerList.slice(0, 5).join(',');
+  const url = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=${symbols}&topics=${topics}&limit=15&apikey=${avKey}`;
+  const res = await fetch(url);
+  const json = await res.json();
+  if (json['Information']) throw new Error('Alpha Vantage rate limit — free tier allows 25 requests/day. Try again in a few minutes.');
+  if (!json.feed || !json.feed.length) throw new Error('Alpha Vantage returned no news. Check your API key at alphavantage.co');
+  return (json.feed || []).slice(0, 12).map(a => ({
+    title: a.title, source: a.source, url: a.url, summary: a.summary || '', type: 'market'
+  }));
 }
 
 // ── CALL CLAUDE
@@ -405,7 +418,7 @@ async function callClaude(apiKey, system, userMsg, model = 'claude-haiku-4-5-202
       'anthropic-version': '2023-06-01',
       'anthropic-dangerous-direct-browser-access': 'true'
     },
-    body: JSON.stringify({ model, max_tokens: 2500, system, messages: [{ role: 'user', content: userMsg }] })
+    body: JSON.stringify({ model, max_tokens: 3000, system, messages: [{ role: 'user', content: userMsg }] })
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -415,109 +428,138 @@ async function callClaude(apiKey, system, userMsg, model = 'claude-haiku-4-5-202
   return data.content[0].text;
 }
 
-// ── CLAUDE: ANALYZE BOTH NEWS STREAMS
-async function analyzeAllNews(apiKey, marketNews, geoNews, tickerList) {
-  const system = `You are a financial analyst with deep expertise in both capital markets and geopolitical risk. 
-You analyze two news streams — financial market news and global geopolitical developments — to assess portfolio impact for a retail investor.
-Return ONLY valid JSON — an array of objects. No markdown, no preamble, no text outside the JSON.`;
-
+// ── CLAUDE: ANALYZE MARKET NEWS
+async function analyzeMarketNews(apiKey, marketNews, tickerList) {
+  const system = `You are a financial analyst specializing in defense sector, technology, and broad market ETFs. Analyze financial news headlines for a retail investor. Return ONLY valid JSON — an array. No markdown, no text outside the JSON.`;
   const user = `Investor watchlist: ${tickerList.join(', ')}
+Categories: Defense ETFs (ITA, XAR, DFEN, PPA), Technology (QQQ, AAPL, MSFT, NVDA), Broad ETFs (SPY, VTI, VGT, BND)
 
-FINANCIAL MARKET NEWS:
-${marketNews.map((h,i) => `F${i+1}. [${h.source}] ${h.title}`).join('\n')}
+FINANCIAL NEWS HEADLINES:
+${marketNews.map((h,i) => `${i+1}. [${h.source}] ${h.title}`).join('\n')}
 
-GEOPOLITICAL NEWS:
-${geoNews.map((h,i) => `G${i+1}. [${h.source}] ${h.title}`).join('\n')}
-
-Analyze each headline for portfolio relevance. Return a JSON array. Each object must have exactly:
+Return a JSON array. Each object must have exactly:
 {
-  "id": "F1" or "G1" etc (matching the prefix above),
-  "type": "market" or "geo",
+  "index": number (1-based),
   "relevance": number 1-10,
   "sentiment": "bullish" | "bearish" | "neutral",
-  "bullets": ["why this matters for the portfolio — specific and actionable", "bullet 2", "bullet 3"],
-  "tickers": ["AFFECTED_TICKER"],
-  "geoMarketLink": "only for geo type: one sentence on how this geopolitical event connects to market/portfolio impact, otherwise null"
+  "bullets": ["specific portfolio impact bullet 1", "bullet 2", "bullet 3"],
+  "tickers": ["AFFECTED_TICKER"]
 }
 
-For geo items: always explain the chain from geopolitical event → market sector → portfolio impact.
-Only include items with relevance >= 5. Sort descending by relevance. Max 6 market + 6 geo items.`;
+Prioritize defense sector news highly. Only include relevance >= 5. Sort descending. Max 6 items.`;
 
   const raw = await callClaude(apiKey, system, user);
   return JSON.parse(raw.replace(/```json|```/g,'').trim());
 }
 
-// ── CLAUDE: RECOMMENDATIONS (Sonnet for higher stakes)
-async function getRecommendations(apiKey, marketSignals, marketNewsSummary, geoNewsSummary, tickerList) {
-  const system = `You are a conservative fiduciary investment analyst AI. You synthesize financial market data, market news, AND geopolitical risk signals to generate portfolio recommendations for a retail investor with a long-term diversified ETF and stock portfolio (personal brokerage and retirement accounts).
-Return ONLY valid JSON — no markdown, no preamble.`;
+// ── CLAUDE: GENERATE GEOPOLITICAL ANALYSIS (no external API needed)
+async function generateGeopoliticalAnalysis(apiKey, tickerList, marketSignalsSummary) {
+  const system = `You are a geopolitical risk analyst with deep expertise in defense sector investing, global conflicts, trade policy, and macroeconomic risk. You provide current geopolitical intelligence that is directly relevant to investment portfolios containing defense ETFs and technology stocks. Return ONLY valid JSON. No markdown, no text outside the JSON.`;
+
+  const user = `Investor portfolio focus: ${tickerList.join(', ')}
+Key holdings: Defense ETFs (ITA, XAR, DFEN, PPA), Technology (QQQ, AAPL, MSFT, NVDA), Broad market (SPY, VTI, VGT, BND)
+
+Current market context:
+${marketSignalsSummary}
+
+Based on your knowledge of current global geopolitical conditions, generate 5-6 of the most relevant geopolitical intelligence items that could materially impact this portfolio. Consider: active conflicts, defense spending trends, US-China tensions, NATO dynamics, sanctions regimes, trade wars, tariffs, supply chain risks, semiconductor export controls, and any other geopolitical forces affecting defense and tech sectors.
+
+Return a JSON array. Each object must have exactly:
+{
+  "title": "concise geopolitical intelligence headline",
+  "region": "geographic region or country involved",
+  "relevance": number 1-10,
+  "sentiment": "bullish" | "bearish" | "neutral",
+  "bullets": ["direct portfolio impact bullet 1", "bullet 2", "bullet 3"],
+  "tickers": ["MOST_AFFECTED_TICKER"],
+  "marketLink": "one sentence connecting this geopolitical development to specific market/sector impact"
+}
+
+Sort by relevance descending. Focus on actionable intelligence, not general background.`;
+
+  const raw = await callClaude(apiKey, system, user);
+  return JSON.parse(raw.replace(/```json|```/g,'').trim());
+}
+
+// ── CLAUDE: RECOMMENDATIONS (Sonnet)
+async function getRecommendations(apiKey, marketData, marketNewsSummary, geoSummary, tickerList) {
+  const system = `You are a conservative fiduciary investment analyst. You synthesize market data, live financial news, AND geopolitical risk intelligence to generate portfolio recommendations for a retail investor with defense ETF, technology, and broad market ETF holdings in personal brokerage and retirement accounts. Return ONLY valid JSON — no markdown, no preamble.`;
 
   const user = `Watchlist: ${tickerList.join(', ')}
 
-MARKET SIGNALS (price, RSI, Sharpe, sentiment score):
-${marketSignals}
+MARKET SIGNALS:
+${marketData}
 
-TOP FINANCIAL NEWS INSIGHTS:
+FINANCIAL NEWS INSIGHTS:
 ${marketNewsSummary}
 
-TOP GEOPOLITICAL RISK SIGNALS:
-${geoNewsSummary}
+GEOPOLITICAL RISK INTELLIGENCE:
+${geoSummary}
 
-Synthesize all three data streams. Return a JSON array of 5-7 recommendations. Each must have exactly:
+Synthesize all three. Return a JSON array of 5-7 recommendations. Each must have exactly:
 {
   "ticker": "TICKER",
   "action": "BUY" | "SELL" | "HOLD" | "TRIM" | "ADD",
   "confidence": "HIGH" | "MEDIUM" | "LOW",
   "urgency": "immediate" | "near-term" | "watch",
-  "reasoning": ["point referencing market data", "point referencing market news", "point referencing geopolitical signal"],
+  "reasoning": ["market data point", "financial news point", "geopolitical context point"],
   "risks": ["specific risk 1", "specific risk 2"],
-  "geoRisk": "one sentence on the primary geopolitical risk to this position, or null if none"
+  "geoRisk": "one sentence on the primary geopolitical risk or tailwind for this position, or null"
 }
 
-Rules: Be conservative. At least one HOLD. Flag RSI > 70 as overbought risk. RSI < 30 as oversold opportunity. Explicitly connect geopolitical signals to at least 2 recommendations.`;
+Rules: Be conservative. At least 2 HOLDs. Flag RSI > 70 overbought. RSI < 30 oversold opportunity. Explicitly reference geopolitical signals for defense ETF recommendations. Consider defense spending tailwinds from global conflicts for ITA/XAR/DFEN/PPA.`;
 
   const raw = await callClaude(apiKey, system, user, 'claude-sonnet-4-6');
   return JSON.parse(raw.replace(/```json|```/g,'').trim());
 }
 
-// ── RENDER: NEWS (split by type)
-function renderNews(analyzed, marketNews, geoNews) {
-  const marketItems = analyzed.filter(i => i.type === 'market');
-  const geoItems = analyzed.filter(i => i.type === 'geo');
-
-  const renderCard = (item, allNews, cardClass, bulletClass) => {
-    const idx = parseInt((item.id || '1').replace(/[A-Z]/g,'')) - 1;
-    const h = allNews[idx] || {};
-    return `<div class="news-card ${cardClass}">
+// ── RENDER: MARKET NEWS
+function renderMarketNews(analyzed, marketNews) {
+  const el = document.getElementById('market-news-output');
+  if (!analyzed.length) {
+    el.innerHTML = '<p style="color:var(--muted);font-size:12px;padding:10px">No highly relevant market news found.</p>';
+    return;
+  }
+  el.innerHTML = analyzed.map(item => {
+    const h = marketNews[(item.index||1) - 1] || {};
+    return `<div class="news-card market-card">
       <div class="news-meta">
         <span class="pill ${item.sentiment}">${item.sentiment}</span>
-        <span class="pill score">Relevance ${item.relevance}/10</span>
-        ${item.type==='geo' ? '<span class="pill geo">Geopolitical</span>' : ''}
+        <span class="pill score">${item.relevance}/10</span>
         <span class="source-tag">${h.source||''}</span>
       </div>
       <div class="news-title"><a href="${h.url||'#'}" target="_blank" rel="noopener">${h.title||''}</a></div>
-      <ul class="bullets">${(item.bullets||[]).map(b=>`<li class="${bulletClass}">${b}</li>`).join('')}</ul>
-      ${item.geoMarketLink ? `<div style="margin-top:8px;font-size:11px;color:var(--geo);font-family:var(--mono);line-height:1.5">⟳ ${item.geoMarketLink}</div>` : ''}
+      <ul class="bullets">${(item.bullets||[]).map(b=>`<li>${b}</li>`).join('')}</ul>
       ${item.tickers?.length ? `<div class="tickers-row">${item.tickers.map(t=>`<span class="t-badge">${t}</span>`).join('')}</div>` : ''}
     </div>`;
-  };
+  }).join('');
+}
 
-  const mEl = document.getElementById('market-news-output');
-  const gEl = document.getElementById('geo-news-output');
-
-  mEl.innerHTML = marketItems.length
-    ? marketItems.map(i => renderCard(i, marketNews, 'market-card', '')).join('')
-    : '<p style="color:var(--muted);font-size:12px;padding:10px">No highly relevant market news found.</p>';
-
-  gEl.innerHTML = geoItems.length
-    ? geoItems.map(i => renderCard(i, geoNews, 'geo-card', 'geo-bullet')).join('')
-    : '<p style="color:var(--muted);font-size:12px;padding:10px">No highly relevant geopolitical news found.</p>';
+// ── RENDER: GEO NEWS
+function renderGeoNews(geoItems) {
+  const el = document.getElementById('geo-news-output');
+  if (!geoItems.length) {
+    el.innerHTML = '<p style="color:var(--muted);font-size:12px;padding:10px">No geopolitical analysis generated.</p>';
+    return;
+  }
+  el.innerHTML = geoItems.map(item => `
+    <div class="news-card geo-card">
+      <div class="news-meta">
+        <span class="pill ${item.sentiment}">${item.sentiment}</span>
+        <span class="pill score">${item.relevance}/10</span>
+        <span class="pill geo">${item.region||'Global'}</span>
+      </div>
+      <div class="news-title" style="color:#e2d9f3">${item.title||''}</div>
+      <ul class="bullets">${(item.bullets||[]).map(b=>`<li class="geo-bullet">${b}</li>`).join('')}</ul>
+      ${item.marketLink ? `<div class="geo-link">⟳ ${item.marketLink}</div>` : ''}
+      ${item.tickers?.length ? `<div class="tickers-row">${item.tickers.map(t=>`<span class="t-badge">${t}</span>`).join('')}</div>` : ''}
+    </div>`).join('');
 }
 
 // ── RENDER: MARKET TABLE
 function renderMarket(marketData, sentimentMap) {
   document.getElementById('market-output').innerHTML = marketData.map(m => {
-    if (m.error) return `<tr><td class="ticker-name">${m.ticker}</td><td colspan="4" style="color:var(--muted);font-size:11px;text-align:right">Data unavailable</td></tr>`;
+    if (m.error) return `<tr><td><div class="ticker-name">${m.ticker}</div><div class="ticker-cat">${TICKER_CATS[m.ticker]||''}</div></td><td colspan="4" style="color:var(--muted);font-size:11px;text-align:right">Data unavailable</td></tr>`;
     const sent = sentimentMap[m.ticker] || 0;
     const sig = compositeSignal(m.rsi, m.sharpe, sent);
     const chgClass = m.change1d >= 0 ? 'pos' : 'neg';
@@ -527,7 +569,7 @@ function renderMarket(marketData, sentimentMap) {
     const sigLeft = sig >= 0 ? '50%' : `${50 + sig/2}%`;
     const sigWidth = `${Math.abs(sig)/2}%`;
     return `<tr>
-      <td class="ticker-name">${m.ticker}</td>
+      <td><div class="ticker-name">${m.ticker}</div><div class="ticker-cat">${TICKER_CATS[m.ticker]||''}</div></td>
       <td style="font-weight:500">$${m.price}</td>
       <td class="chg ${chgClass}">${chgSign}${m.change1d}%</td>
       <td><div class="rsi-wrap">
@@ -550,12 +592,13 @@ function renderRecs(recs) {
       <div class="rec-header">
         <span class="rec-ticker">${r.ticker}</span>
         <span class="pill ${r.action.toLowerCase()}">${r.action}</span>
-        <span class="pill ${r.confidence.toLowerCase()}">${r.confidence} confidence</span>
+        <span class="pill ${(r.confidence||'low').toLowerCase()}">${r.confidence} confidence</span>
         <span class="urgency-tag">${urgencyMap[r.urgency]||r.urgency}</span>
+        ${TICKER_CATS[r.ticker] ? `<span style="font-family:var(--mono);font-size:9px;color:var(--muted)">${TICKER_CATS[r.ticker]}</span>` : ''}
       </div>
       <ul class="rec-reasoning">${(r.reasoning||[]).map(p=>`<li>${p}</li>`).join('')}</ul>
-      ${r.geoRisk ? `<div class="geo-impact"><div class="geo-impact-label">🌍 Geopolitical Risk</div><p>${r.geoRisk}</p></div>` : ''}
-      ${r.risks?.length ? `<div class="risk-flags" style="margin-top:8px">${r.risks.map(f=>`<div class="risk-flag">⚠ ${f}</div>`).join('')}</div>` : ''}
+      ${r.geoRisk ? `<div class="geo-risk-box"><div class="geo-risk-label">🌍 Geopolitical Factor</div><p>${r.geoRisk}</p></div>` : ''}
+      ${r.risks?.length ? `<div class="risk-flags">${r.risks.map(f=>`<div class="risk-flag">⚠ ${f}</div>`).join('')}</div>` : ''}
     </div>`).join('');
 }
 
@@ -564,11 +607,9 @@ async function runBrief() {
   clearError();
   const apiKey = document.getElementById('api-key').value.trim();
   const avKey  = document.getElementById('av-key').value.trim();
-  const ndKey  = document.getElementById('nd-key').value.trim();
 
-  if (!apiKey) { showError('Enter your Anthropic API key.'); return; }
-  if (!avKey)  { showError('Enter your Alpha Vantage API key — get one free at <a href="https://alphavantage.co/support/#api-key" target="_blank">alphavantage.co</a>'); return; }
-  if (!ndKey)  { showError('Enter your NewsData.io API key — get one free at <a href="https://newsdata.io" target="_blank">newsdata.io</a>'); return; }
+  if (!apiKey) { showError('Enter your Anthropic API key — <a href="https://platform.anthropic.com" target="_blank">platform.anthropic.com</a>'); return; }
+  if (!avKey)  { showError('Enter your Alpha Vantage API key — free at <a href="https://alphavantage.co/support/#api-key" target="_blank">alphavantage.co</a>'); return; }
   if (!tickers.length) { showError('Add at least one ticker to your watchlist.'); return; }
 
   const btn = document.getElementById('run-btn');
@@ -577,52 +618,51 @@ async function runBrief() {
   document.getElementById('results').classList.remove('visible');
 
   try {
-    // Step 1: Market data (Yahoo Finance, parallel)
-    setStatus('Fetching market data from Yahoo Finance…');
+    // Step 1: Market data (parallel)
+    setStatus('Fetching live market data…');
     const marketData = await Promise.all(tickers.map(fetchMarketData));
 
     // Step 2: Financial news (Alpha Vantage)
     setStatus('Fetching financial news from Alpha Vantage…');
     const marketNews = await fetchFinancialNews(avKey, tickers);
 
-    // Step 3: Geopolitical news (NewsData.io)
-    setStatus('Fetching geopolitical intelligence from NewsData.io…');
-    const geoNews = await fetchGeopoliticalNews(ndKey);
+    // Step 3: Claude analyzes market news
+    setStatus('Analyzing financial news with Claude…');
+    const analyzedNews = await analyzeMarketNews(apiKey, marketNews, tickers);
 
-    // Step 4: Claude analyzes both streams
-    setStatus('Claude is synthesizing market + geopolitical signals…');
-    const analyzed = await analyzeAllNews(apiKey, marketNews, geoNews, tickers);
-
-    // Build sentiment map from analyzed news
+    // Build sentiment map
     const sentimentMap = {};
-    analyzed.forEach(item => {
+    analyzedNews.forEach(item => {
       const score = item.sentiment === 'bullish' ? 0.7 : item.sentiment === 'bearish' ? -0.7 : 0;
       const weight = (item.relevance || 5) / 10;
       (item.tickers||[]).forEach(t => { sentimentMap[t] = (sentimentMap[t]||0) + score * weight; });
     });
 
-    // Step 5: Claude generates recommendations (Sonnet)
-    setStatus('Generating recommendations with Claude Sonnet…');
+    // Step 4: Claude generates geopolitical intelligence
+    setStatus('Generating geopolitical intelligence with Claude…');
+    const marketSignalsSummary = marketData.filter(m => !m.error)
+      .map(m => `${m.ticker} (${TICKER_CATS[m.ticker]||''}): $${m.price}, 1D ${m.change1d}%, RSI ${m.rsi}`)
+      .join(' | ');
+    const geoItems = await generateGeopoliticalAnalysis(apiKey, tickers, marketSignalsSummary);
+
+    // Step 5: Recommendations (Sonnet)
+    setStatus('Synthesizing recommendations with Claude Sonnet…');
     const marketSignals = marketData.filter(m => !m.error)
       .map(m => `${m.ticker}: $${m.price}, 1D ${m.change1d}%, RSI ${m.rsi}, Sharpe ${m.sharpe}, sentiment ${(sentimentMap[m.ticker]||0).toFixed(2)}`)
       .join('\n');
-
-    const mAnalyzed = analyzed.filter(i => i.type === 'market').slice(0,5);
-    const gAnalyzed = analyzed.filter(i => i.type === 'geo').slice(0,5);
-
-    const marketNewsSummary = mAnalyzed
-      .map(item => `[${(item.sentiment||'').toUpperCase()}] ${marketNews[parseInt((item.id||'1').replace(/[A-Z]/g,''))-1]?.title} → ${item.bullets?.[0]||''}`)
+    const marketNewsSummary = analyzedNews.slice(0,5)
+      .map(item => `[${(item.sentiment||'').toUpperCase()}] ${marketNews[(item.index||1)-1]?.title} → ${item.bullets?.[0]||''}`)
+      .join('\n');
+    const geoSummary = geoItems.slice(0,5)
+      .map(item => `[GEO][${(item.sentiment||'').toUpperCase()}][${item.region}] ${item.title} → ${item.bullets?.[0]||''} | ${item.marketLink||''}`)
       .join('\n');
 
-    const geoNewsSummary = gAnalyzed
-      .map(item => `[GEO][${(item.sentiment||'').toUpperCase()}] ${geoNews[parseInt((item.id||'1').replace(/[A-Z]/g,''))-1]?.title} → ${item.bullets?.[0]||''} | Market link: ${item.geoMarketLink||''}`)
-      .join('\n');
+    const recs = await getRecommendations(apiKey, marketSignals, marketNewsSummary, geoSummary, tickers);
 
-    const recs = await getRecommendations(apiKey, marketSignals, marketNewsSummary, geoNewsSummary, tickers);
-
-    // Render everything
+    // Render
     document.getElementById('gen-time').textContent = new Date().toLocaleString('en-US',{dateStyle:'medium',timeStyle:'short'});
-    renderNews(analyzed, marketNews, geoNews);
+    renderMarketNews(analyzedNews, marketNews);
+    renderGeoNews(geoItems);
     renderMarket(marketData, sentimentMap);
     renderRecs(recs);
 
